@@ -18,8 +18,10 @@
 
 ### NetBeans ###
 nbproject/private/
-build/
 nbbuild/
 dist/
 nbdist/
 .nb-gradle/
+src/generated_src/
+src/main/generated/
+/out/

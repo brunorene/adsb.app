@@ -3,8 +3,6 @@ package pt.brene.adsb.client.consumer;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import lombok.extern.slf4j.Slf4j;
-import org.jooq.lambda.tuple.Tuple;
-import org.jooq.lambda.tuple.Tuple2;
 import pt.brene.adsb.client.message.AdsbMessage;
 import pt.brene.adsb.client.message.EsAirbornePosition;
 import pt.brene.adsb.client.message.EsAirborneVelocity;
@@ -15,18 +13,9 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-
-import static java.util.concurrent.TimeUnit.MINUTES;
 
 @Slf4j
 public class MessageReceiver {
-
-    private final ScheduledExecutorService service = Executors.newScheduledThreadPool(5);
-
-    private final Map<Tuple2<String, String>, ScheduledFuture<?>> futures = new HashMap<>();
 
     private final Map<String, EsAirbornePosition> positions = new HashMap<>();
     private final Map<String, EsAirborneVelocity> speeds = new HashMap<>();

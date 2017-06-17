@@ -47,6 +47,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-jetty')
     compile('org.springframework.boot:spring-boot-starter-jooq')
     runtime('org.springframework.boot:spring-boot-devtools')
+    runtime('com.h2database:h2:1.4.196')
     jooqRuntime('com.h2database:h2:1.4.196')
     compileOnly('org.springframework.boot:spring-boot-configuration-processor')
     compileOnly('org.projectlombok:lombok')
@@ -74,7 +75,7 @@ jooq {
                 relations = true
                 deprecated = false
                 records = true
-                immutablePojos = true
+                pojos = true
                 fluentSetters = true
             }
             target {
