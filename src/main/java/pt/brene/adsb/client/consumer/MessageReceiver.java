@@ -54,7 +54,7 @@ public class MessageReceiver {
         if (identifiers.containsKey(hexId)
                 && positions.containsKey(hexId)
                 && speeds.containsKey(hexId)) {
-            bus.post(new FlightEntry(null
+            bus.post(new FlightEntry(null, null
                     , new Timestamp(new Date().getTime())
                     , identifiers.get(hexId).getCallSign()
                     , positions.get(hexId).getLatitude()

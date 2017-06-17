@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
@@ -43,14 +44,19 @@ public class AdsbClient {
         bus.register(new MessageReceiver(bus));
     }
 
-    @EventListener(ApplicationReadyEvent.class)
     @Async
-    public void readFromSdr() throws IOException {
+    @EventListener(ApplicationReadyEvent.class)
+    public void serviceStartup() throws IOException {
+        dsl.selectFrom(CONSUMER)
+                .fetch(CONSUMER.CLIENT)
+                .stream()
+                .map(Utils::convert)
+                .forEach(uuid -> bus.register(new FlightConsumer(uuid, dsl)));
         try (Socket socket = new Socket(config.getHost(), config.getPort());
              BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream(), Charsets.UTF_8))) {
             reader.lines()
-                    .map(line -> AdsbMessage.newMessage(line))
-                    .filter(msg -> msg != null)
+                    .map(AdsbMessage::newMessage)
+                    .filter(Objects::nonNull)
                     .forEach(bus::post);
         }
     }
@@ -74,10 +80,18 @@ public class AdsbClient {
     }
 
     public List<FlightEntry> pollState(UUID uuid) {
-        return dsl.selectFrom(FLIGHT_ENTRY)
+        List<FlightEntry> entries = dsl.selectFrom(FLIGHT_ENTRY)
                 .where(FLIGHT_ENTRY.CLIENT.eq(Utils.convert(uuid)))
-                .orderBy(FLIGHT_ENTRY.TIMESTAMP.desc())
+                .orderBy(FLIGHT_ENTRY.FLIGHT_ID.asc(),
+                        FLIGHT_ENTRY.TIMESTAMP.desc())
                 .fetchInto(FlightEntry.class);
+        dsl.deleteFrom(FLIGHT_ENTRY)
+                .where(FLIGHT_ENTRY.ID.in(entries
+                        .stream()
+                        .map(FlightEntry::getId)
+                        .collect(Collectors.toList())))
+                .execute();
+        return entries;
     }
 }
 

@@ -7,9 +7,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import pt.brene.adsb.client.AdsbClient;
-import pt.brene.adsb.domain.tables.pojos.FlightEntry;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
@@ -26,12 +26,25 @@ public class AdsbController {
     }
 
     @GetMapping("/clients")
-    public List<UUID> getClients() {
-        return client.getClients();
+    public List<String> getClients() {
+        return client.getClients()
+                .stream()
+                .map(UUID::toString)
+                .collect(Collectors.toList());
     }
 
     @GetMapping("poll/{key}")
-    public List<FlightEntry> pollState(@PathVariable UUID key) {
-        return client.pollState(key);
+    public List<FlightEntryDto> pollState(@PathVariable UUID key) {
+        return client.pollState(key)
+                .stream()
+                .map(fe -> FlightEntryDto.builder()
+                        .dateTime(fe.getTimestamp().toLocalDateTime())
+                        .flightId(fe.getFlightId())
+                        .latitude(fe.getLatitude())
+                        .longitude(fe.getLongitude())
+                        .altitude(fe.getAltitude())
+                        .speed(fe.getSpeed())
+                        .build())
+                .collect(Collectors.toList());
     }
 }
