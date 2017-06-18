@@ -12,8 +12,11 @@ import pt.brene.adsb.client.FlightInformationDto;
 import pt.brene.adsb.domain.tables.pojos.FlightEntry;
 
 import java.util.List;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toList;
 import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 @RestController
@@ -33,7 +36,7 @@ class AdsbController {
         return client.getClients()
                 .stream()
                 .map(UUID::toString)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     @GetMapping("poll/{key}")
@@ -45,10 +48,10 @@ class AdsbController {
                                 , fe.getLatitude()
                                 , fe.getLongitude()
                                 , fe.getAltitude()
-                                , fe.getSpeed()), Collectors.toList())))
+                                , fe.getSpeed()), toCollection(TreeSet::new))))
                 .entrySet()
                 .stream()
                 .map(map -> new FlightEntryDto(map.getKey(), map.getValue()))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 }

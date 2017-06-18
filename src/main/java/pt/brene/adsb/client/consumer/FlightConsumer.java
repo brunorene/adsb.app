@@ -31,30 +31,12 @@ public class FlightConsumer {
                 .execute();
     }
 
-    private byte[] sha256(FlightEntry entry) throws NoSuchAlgorithmException {
-        MessageDigest sha = MessageDigest.getInstance("SHA-256");
-        byte[] hold = new byte[8];
-        sha.update(Bytes.concat(ByteBuffer.wrap(hold).putLong(entry.getTimestamp().getTime()).array()
-                , ByteBuffer.wrap(hold).putDouble(entry.getAltitude()).array()
-                , ByteBuffer.wrap(hold).putDouble(entry.getLatitude()).array()
-                , ByteBuffer.wrap(hold).putDouble(entry.getLongitude()).array()
-                , ByteBuffer.wrap(hold).putDouble(entry.getSpeed()).array()));
-        return sha.digest();
-    }
-
     @Subscribe
     @AllowConcurrentEvents
     @Transactional
     public void newFlightEntry(FlightEntry entry) throws NoSuchAlgorithmException {
-        byte[] sha256 = sha256(entry);
-        if (dsl.selectFrom(FLIGHT_ENTRY)
-                .where(FLIGHT_ENTRY.TIMESTAMP.greaterThan(new Timestamp(entry.getTimestamp().getTime() - 5000L)))
-                .or(FLIGHT_ENTRY.SHA256.eq(sha256))
-                .fetch().isEmpty()) {
-            entry.setClient(Utils.convert(key));
-            entry.setSha256(sha256);
-            dsl.executeInsert(dsl.newRecord(FLIGHT_ENTRY, entry));
-        }
+        entry.setClient(Utils.convert(key));
+        dsl.executeInsert(dsl.newRecord(FLIGHT_ENTRY, entry));
     }
 
 }

@@ -2,15 +2,15 @@ package pt.brene.adsb.client;
 
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import lombok.Getter;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import pt.brene.adsb.DateTimeConverter;
 
 import java.time.LocalDateTime;
 
-@Getter
+@Data
 @RequiredArgsConstructor
-public class FlightInformationDto {
+public class FlightInformationDto implements Comparable<FlightInformationDto> {
 
     private final LocalDateTime dateTime;
     private final Double latitude;
@@ -19,7 +19,12 @@ public class FlightInformationDto {
     private final Double speed;
 
     @JsonSerialize(converter = DateTimeConverter.class)
-    private LocalDateTime getDateTime() {
+    public LocalDateTime getDateTime() {
         return dateTime;
+    }
+
+    @Override
+    public int compareTo(FlightInformationDto flightInformationDto) {
+        return -getDateTime().compareTo(flightInformationDto.getDateTime());
     }
 }

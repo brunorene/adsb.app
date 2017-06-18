@@ -63,8 +63,7 @@ public class MessageReceiver {
                     , positions.get(hexId).getLatitude()
                     , positions.get(hexId).getLongitude()
                     , positions.get(hexId).getAltitude()
-                    , speeds.get(hexId).getGroundSpeed()
-                    , null));
+                    , speeds.get(hexId).getGroundSpeed()));
             positions.remove(hexId);
             speeds.remove(hexId);
         }

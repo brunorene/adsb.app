@@ -68,6 +68,7 @@ jooq {
                 records = true
                 pojos = true
                 fluentSetters = true
+                validationAnnotations = true
             }
             target {
                 packageName = 'pt.brene.adsb.domain'
