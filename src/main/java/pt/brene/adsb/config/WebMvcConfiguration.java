@@ -7,13 +7,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
-public class WebMvcConfiguration extends WebMvcConfigurationSupport {
+public class WebMvcConfiguration extends WebMvcConfigurerAdapter {
 
     @Override
-    protected void addFormatters(FormatterRegistry registry) {
+    public void addFormatters(FormatterRegistry registry) {
         //noinspection Convert2Lambda
         registry.addConverter(new Converter<String, UUID>() {
             @Override
@@ -21,6 +22,11 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
                 return new UUID(source);
             }
         });
+    }
+
+    @Override
+    public void configurePathMatch(PathMatchConfigurer configurer) {
+        configurer.setUseSuffixPatternMatch(false);
     }
 
     @Bean

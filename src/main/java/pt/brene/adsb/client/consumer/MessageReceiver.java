@@ -3,6 +3,7 @@ package pt.brene.adsb.client.consumer;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import pt.brene.adsb.client.message.AdsbMessage;
 import pt.brene.adsb.client.message.EsAirbornePosition;
 import pt.brene.adsb.client.message.EsAirborneVelocity;
@@ -46,17 +47,24 @@ public class MessageReceiver {
         processMsg(identifiers, identifier);
     }
 
+
     private void logFlight(String hexId) {
         if (identifiers.containsKey(hexId)
                 && positions.containsKey(hexId)
-                && speeds.containsKey(hexId)) {
+                && speeds.containsKey(hexId)
+                && ObjectUtils.allNotNull(identifiers.get(hexId).getCallSign()
+                , positions.get(hexId).getLatitude()
+                , positions.get(hexId).getLongitude()
+                , positions.get(hexId).getAltitude()
+                , speeds.get(hexId).getGroundSpeed())) {
             bus.post(new FlightEntry(null, null
                     , new Timestamp(new Date().getTime())
                     , identifiers.get(hexId).getCallSign()
                     , positions.get(hexId).getLatitude()
                     , positions.get(hexId).getLongitude()
                     , positions.get(hexId).getAltitude()
-                    , speeds.get(hexId).getGroundSpeed()));
+                    , speeds.get(hexId).getGroundSpeed()
+                    , null));
             positions.remove(hexId);
             speeds.remove(hexId);
         }

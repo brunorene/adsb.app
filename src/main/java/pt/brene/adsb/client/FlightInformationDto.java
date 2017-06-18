@@ -1,4 +1,5 @@
-package pt.brene.adsb.api;
+package pt.brene.adsb.client;
+
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
@@ -9,10 +10,9 @@ import java.time.LocalDateTime;
 
 @Getter
 @RequiredArgsConstructor
-class FlightEntryDto {
+public class FlightInformationDto {
 
     private final LocalDateTime dateTime;
-    private final String flightId;
     private final Double latitude;
     private final Double longitude;
     private final Double altitude;
