@@ -8,19 +8,16 @@ apply plugin: 'idea'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 
-repositories {
-    mavenCentral()
-    maven {
-        url 'http://maven.vaadin.com/vaadin-addons'
-    }
-}
-
 sourceSets {
     main {
         java {
             srcDir 'src/main/generated'
         }
     }
+}
+
+repositories {
+    mavenCentral()
 }
 
 idea {
@@ -30,18 +27,12 @@ idea {
     }
 }
 
-ext {
-    vaadinVersion = '8.0.6'
-}
-
 dependencies {
-    compile('com.vaadin.tapio:googlemaps:2.0.0')
     compile('ch.qos.logback:logback-classic:1.2.3')
     compile('com.google.guava:guava:22.0')
     compile('org.jooq:jool:0.9.12')
     compile('org.apache.commons:commons-lang3:3.5')
     compile('com.github.stephenc.eaio-uuid:uuid:3.4.0')
-    compile('com.vaadin:vaadin-spring-boot-starter')
     compile('com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.8')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-jetty')
@@ -83,12 +74,6 @@ jooq {
                 directory = 'src/main/generated'
             }
         }
-    }
-}
-
-dependencyManagement {
-    imports {
-        mavenBom "com.vaadin:vaadin-bom:${vaadinVersion}"
     }
 }
 

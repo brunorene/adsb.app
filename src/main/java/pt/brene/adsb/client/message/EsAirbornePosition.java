@@ -1,8 +1,6 @@
 package pt.brene.adsb.client.message;
 
-import java.io.Serializable;
-
-public class EsAirbornePosition extends AdsbMessage implements Serializable {
+public class EsAirbornePosition extends AdsbMessage {
 
     public Double getAltitude() {
         return altitude;

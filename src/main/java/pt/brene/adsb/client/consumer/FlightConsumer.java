@@ -4,7 +4,6 @@ import com.eaio.uuid.UUID;
 import com.google.common.eventbus.AllowConcurrentEvents;
 import com.google.common.eventbus.Subscribe;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +14,6 @@ import java.sql.Timestamp;
 
 import static pt.brene.adsb.domain.Tables.FLIGHT_ENTRY;
 
-@Slf4j
 @RequiredArgsConstructor
 public class FlightConsumer {
 

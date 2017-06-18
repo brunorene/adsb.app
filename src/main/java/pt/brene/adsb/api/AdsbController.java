@@ -15,7 +15,7 @@ import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 @RestController
 @RequiredArgsConstructor
-public class AdsbController {
+class AdsbController {
 
     private final AdsbClient client;
 
@@ -37,14 +37,13 @@ public class AdsbController {
     public List<FlightEntryDto> pollState(@PathVariable UUID key) {
         return client.pollState(key)
                 .stream()
-                .map(fe -> FlightEntryDto.builder()
-                        .dateTime(fe.getTimestamp().toLocalDateTime())
-                        .flightId(fe.getFlightId())
-                        .latitude(fe.getLatitude())
-                        .longitude(fe.getLongitude())
-                        .altitude(fe.getAltitude())
-                        .speed(fe.getSpeed())
-                        .build())
+                .map(fe -> new FlightEntryDto(
+                        fe.getTimestamp().toLocalDateTime()
+                        , fe.getFlightId()
+                        , fe.getLatitude()
+                        , fe.getLongitude()
+                        , fe.getAltitude()
+                        , fe.getSpeed()))
                 .collect(Collectors.toList());
     }
 }

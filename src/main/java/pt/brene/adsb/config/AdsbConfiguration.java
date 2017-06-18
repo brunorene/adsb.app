@@ -11,4 +11,5 @@ public class AdsbConfiguration {
 
     private String host;
     private int port;
+
 }

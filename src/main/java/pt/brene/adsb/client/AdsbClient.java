@@ -4,7 +4,6 @@ import com.eaio.uuid.UUID;
 import com.google.common.base.Charsets;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
-import lombok.extern.slf4j.Slf4j;
 import org.jooq.DSLContext;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -30,7 +29,6 @@ import java.util.stream.Collectors;
 import static pt.brene.adsb.domain.Tables.FLIGHT_ENTRY;
 import static pt.brene.adsb.domain.tables.Consumer.CONSUMER;
 
-@Slf4j
 @Service
 public class AdsbClient {
 

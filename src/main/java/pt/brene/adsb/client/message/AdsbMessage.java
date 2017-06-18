@@ -1,43 +1,37 @@
 package pt.brene.adsb.client.message;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
-import lombok.val;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Slf4j
-@EqualsAndHashCode(exclude = {"dateTimeGenerated", "dateTimeLogged"}, doNotUseGetters = true)
-public abstract class AdsbMessage implements Comparable<AdsbMessage> {
+public abstract class AdsbMessage {
 
-    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS");
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS");
 
-    protected MessageType messageType;
-    protected String sessionId;
-    protected String aircraftId;
+    private MessageType messageType;
+    private String sessionId;
+    private String aircraftId;
     @Getter
     private String hexId;
-    protected String flightId;
+    private String flightId;
     @Getter
     private LocalDateTime dateTimeGenerated;
     @Getter
     private LocalDateTime dateTimeLogged;
-    protected String callSign;
-    protected Double altitude;
-    protected Double groundSpeed;
-    protected Double track;
-    protected Double latitude;
-    protected Double longitude;
-    protected Double verticalRate;
-    protected String squawk;
-    protected boolean squawkChangedAlert;
-    protected boolean emergency;
-    protected boolean spiId;
-    protected boolean onGround;
+    String callSign;
+    Double altitude;
+    Double groundSpeed;
+    Double track;
+    Double latitude;
+    Double longitude;
+    Double verticalRate;
+    private String squawk;
+    private boolean squawkChangedAlert;
+    private boolean emergency;
+    private boolean spiId;
+    private boolean onGround;
 
     public static AdsbMessage newMessage(String csvFormat) {
         String[] parts = StringUtils.splitPreserveAllTokens(csvFormat, ',');
@@ -61,15 +55,15 @@ public abstract class AdsbMessage implements Comparable<AdsbMessage> {
         message.aircraftId = parts[3];
         message.hexId = parts[4];
         message.flightId = parts[5];
-        val dateGenerated = parts[6];
-        val timeGenerated = parts[7];
+        String dateGenerated = parts[6];
+        String timeGenerated = parts[7];
         if (dateGenerated.isEmpty() || timeGenerated.isEmpty()) {
             message.dateTimeGenerated = LocalDateTime.now();
         } else {
             message.dateTimeGenerated = LocalDateTime.from(formatter.parse(dateGenerated + " " + timeGenerated));
         }
-        val dateLogged = parts[8];
-        val timeLogged = parts[9];
+        String dateLogged = parts[8];
+        String timeLogged = parts[9];
         if (dateLogged.isEmpty() || timeLogged.isEmpty()) {
             message.dateTimeLogged = LocalDateTime.now();
         } else {
@@ -123,11 +117,6 @@ public abstract class AdsbMessage implements Comparable<AdsbMessage> {
                 (spiId ? ", spiId=" + spiId : "") +
                 (onGround ? ", onGround=" + onGround : "") + ")";
         return str.replaceFirst("\\(, ", "(");
-    }
-
-    @Override
-    public int compareTo(AdsbMessage adsbMessage) {
-        return -ObjectUtils.compare(dateTimeGenerated, adsbMessage.dateTimeGenerated);
     }
 
 }

@@ -2,7 +2,7 @@ package pt.brene.adsb.client.consumer;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import pt.brene.adsb.client.message.AdsbMessage;
 import pt.brene.adsb.client.message.EsAirbornePosition;
 import pt.brene.adsb.client.message.EsAirborneVelocity;
@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@Slf4j
+@RequiredArgsConstructor
 public class MessageReceiver {
 
     private final Map<String, EsAirbornePosition> positions = new HashMap<>();
@@ -22,10 +22,6 @@ public class MessageReceiver {
     private final Map<String, EsIdentificationAndCategory> identifiers = new HashMap<>();
 
     private final EventBus bus;
-
-    public MessageReceiver(EventBus bus) {
-        this.bus = bus;
-    }
 
     private <T extends AdsbMessage> void processMsg(Map<String, T> map, T msg) {
         boolean logFlight = !map.containsKey(msg.getHexId());

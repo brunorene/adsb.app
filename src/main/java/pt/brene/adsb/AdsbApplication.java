@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableTransactionManagement
 @EnableAsync
 @EnableScheduling
-public class AdsbApplication {
+class AdsbApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(AdsbApplication.class, args);
