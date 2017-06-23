@@ -18,7 +18,7 @@ function initMap() {
           markers.push(new google.maps.Marker({
             position: {lat: flights[i].info[0].latitude, lng: flights[i].info[0].longitude},
             map: map,
-            title: flights[i].flightId
+            title: flights[i].flightId + ' (' + flights[i].info[0].distanceFromHome + 'km)'
           }));
         }
       }

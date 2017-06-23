@@ -4,10 +4,13 @@ import com.eaio.uuid.UUID;
 import com.google.common.base.Charsets;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
+import org.gavaghan.geodesy.*;
 import org.jooq.DSLContext;
+import org.jooq.lambda.Seq;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pt.brene.adsb.Utils;
@@ -21,16 +24,21 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.Socket;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static pt.brene.adsb.domain.Tables.FLIGHT_ENTRY;
 import static pt.brene.adsb.domain.tables.Consumer.CONSUMER;
 
 @Service
 public class AdsbClient {
+
+    private final static GlobalPosition HOME = new GlobalPosition(38.651518, -9.185236, 68.7);
+    private final static GeodeticCalculator CALC = new GeodeticCalculator();
 
     private final EventBus bus = new AsyncEventBus(Executors.newWorkStealingPool(4));
     private final AdsbConfiguration config;
@@ -40,6 +48,13 @@ public class AdsbClient {
         this.config = config;
         this.dsl = dsl;
         bus.register(new MessageReceiver(bus));
+    }
+
+    @Scheduled(fixedDelay = 60000)
+    public void deleteOldEntries() {
+        dsl.deleteFrom(FLIGHT_ENTRY)
+                .where(FLIGHT_ENTRY.TIMESTAMP.lessOrEqual(new Timestamp(System.currentTimeMillis() - 60000)))
+                .execute();
     }
 
     @Async
@@ -83,13 +98,23 @@ public class AdsbClient {
                 .orderBy(FLIGHT_ENTRY.FLIGHT_ID.asc(),
                         FLIGHT_ENTRY.TIMESTAMP.desc())
                 .fetchInto(FlightEntry.class);
-        dsl.deleteFrom(FLIGHT_ENTRY)
-                .where(FLIGHT_ENTRY.ID.in(entries
-                        .stream()
-                        .map(FlightEntry::getId)
-                        .collect(Collectors.toList())))
-                .execute();
+        // Never delete the current values
+        if (entries.size() > 1) {
+            List<String> ids = Seq.zip(Seq.seq(entries.stream()),
+                    Seq.concat(entries.subList(1, entries.size()).stream(), Stream.of(entries.get(entries.size() - 1))))
+                    .filter(tup -> !tup.v1.getFlightId().equals(tup.v2.getFlightId()))
+                    .map(tup -> tup.v2.getFlightId())
+                    .collect(Collectors.toList());
+            dsl.deleteFrom(FLIGHT_ENTRY)
+                    .where(FLIGHT_ENTRY.ID.in(ids))
+                    .execute();
+        }
         return entries;
+    }
+
+    public double distanceFromHome(double latitude, double longitude, double elevation) {
+        GlobalPosition here = new GlobalPosition(latitude, longitude, elevation);
+        return Math.round(CALC.calculateGeodeticMeasurement(Ellipsoid.WGS84, here, HOME).getPointToPointDistance()) / 1000.0;
     }
 }
 

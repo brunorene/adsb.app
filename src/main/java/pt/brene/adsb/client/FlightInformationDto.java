@@ -17,6 +17,7 @@ public class FlightInformationDto implements Comparable<FlightInformationDto> {
     private final Double longitude;
     private final Double altitude;
     private final Double speed;
+    private final Double distanceFromHome;
 
     @JsonSerialize(converter = DateTimeConverter.class)
     public LocalDateTime getDateTime() {

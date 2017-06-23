@@ -37,6 +37,7 @@ dependencies {
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-jetty')
     compile('org.springframework.boot:spring-boot-starter-jooq')
+    compile('org.gavaghan:geodesy:1.1.3')
     runtime('org.springframework.boot:spring-boot-devtools')
     runtime('com.h2database:h2:1.4.196')
     jooqRuntime('com.h2database:h2:1.4.196')
