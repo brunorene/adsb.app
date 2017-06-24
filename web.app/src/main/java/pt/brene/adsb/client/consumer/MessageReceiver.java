@@ -4,16 +4,17 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
+import pt.brene.adsb.AdsbConnector;
 import pt.brene.adsb.client.message.AdsbMessage;
 import pt.brene.adsb.client.message.EsAirbornePosition;
 import pt.brene.adsb.client.message.EsAirborneVelocity;
 import pt.brene.adsb.client.message.EsIdentificationAndCategory;
-import pt.brene.adsb.domain.tables.pojos.FlightEntry;
 
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 public class MessageReceiver {
@@ -23,6 +24,7 @@ public class MessageReceiver {
     private final Map<String, EsIdentificationAndCategory> identifiers = new HashMap<>();
 
     private final EventBus bus;
+    private final AdsbConnector connector;
 
     private <T extends AdsbMessage> void processMsg(Map<String, T> map, T msg) {
         boolean logFlight = !map.containsKey(msg.getHexId());
@@ -49,21 +51,20 @@ public class MessageReceiver {
 
 
     private void logFlight(String hexId) {
-        if (identifiers.containsKey(hexId)
-                && positions.containsKey(hexId)
-                && speeds.containsKey(hexId)
-                && ObjectUtils.allNotNull(identifiers.get(hexId).getCallSign()
-                , positions.get(hexId).getLatitude()
+        String callSign = identifiers.getOrDefault(hexId, new EsIdentificationAndCategory(hexId)).getCallSign();
+        if (positions.containsKey(hexId)
+                && ObjectUtils.allNotNull(
+                positions.get(hexId).getLatitude()
                 , positions.get(hexId).getLongitude()
-                , positions.get(hexId).getAltitude()
-                , speeds.get(hexId).getGroundSpeed())) {
-            bus.post(new FlightEntry(null, null
+                , positions.get(hexId).getAltitude())) {
+            bus.post(connector.createFlight(null, null
                     , new Timestamp(new Date().getTime())
-                    , identifiers.get(hexId).getCallSign()
+                    , callSign
                     , positions.get(hexId).getLatitude()
                     , positions.get(hexId).getLongitude()
                     , positions.get(hexId).getAltitude()
-                    , speeds.get(hexId).getGroundSpeed()));
+                    , Optional.ofNullable(speeds.get(hexId))
+                            .map(EsAirborneVelocity::getGroundSpeed).orElse(-1.0)));
         }
     }
 

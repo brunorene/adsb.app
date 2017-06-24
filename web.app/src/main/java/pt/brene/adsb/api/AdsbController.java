@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import pt.brene.adsb.FlightInterface;
 import pt.brene.adsb.client.AdsbClient;
 import pt.brene.adsb.client.FlightEntryDto;
 import pt.brene.adsb.client.FlightInformationDto;
-import pt.brene.adsb.domain.tables.pojos.FlightEntry;
 
 import java.util.List;
 import java.util.TreeSet;
@@ -43,7 +43,7 @@ class AdsbController {
     public List<FlightEntryDto> pollState(@PathVariable UUID key) {
         return client.pollState(key)
                 .stream()
-                .collect(Collectors.groupingBy(FlightEntry::getFlightId
+                .collect(Collectors.groupingBy(FlightInterface::getFlightId
                         , Collectors.mapping(fe -> new FlightInformationDto(fe.getTimestamp().toLocalDateTime()
                                 , fe.getLatitude()
                                 , fe.getLongitude()

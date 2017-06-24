@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import pt.brene.adsb.DateTimeConverter;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
@@ -25,7 +26,7 @@ public class FlightInformationDto implements Comparable<FlightInformationDto> {
     }
 
     @Override
-    public int compareTo(FlightInformationDto flightInformationDto) {
+    public int compareTo(@NotNull FlightInformationDto flightInformationDto) {
         return -getDateTime().compareTo(flightInformationDto.getDateTime());
     }
 }

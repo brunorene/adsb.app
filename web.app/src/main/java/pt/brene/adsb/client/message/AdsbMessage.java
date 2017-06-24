@@ -1,6 +1,7 @@
 package pt.brene.adsb.client.message;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ public abstract class AdsbMessage {
     private String sessionId;
     private String aircraftId;
     @Getter
+    @Setter
     private String hexId;
     private String flightId;
     @Getter

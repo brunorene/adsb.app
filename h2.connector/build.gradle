@@ -1,0 +1,65 @@
+plugins {
+    id 'nu.studer.jooq' version '2.0.6'
+}
+apply plugin: 'java'
+
+version = rootProject.version
+sourceCompatibility = 1.8
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/generated'
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(':data.connector')
+    compile('ch.qos.logback:logback-classic:1.2.3')
+    compile('org.jooq:jool:0.9.12')
+    compile('javax.validation:validation-api:1.1.0.Final')
+    compile('org.springframework.boot:spring-boot-starter-jooq:1.5.4.RELEASE')
+    runtime('com.h2database:h2:1.4.196')
+    jooqRuntime('com.h2database:h2:1.4.196')
+    jooqRuntime project(':custom.generator')
+    compileOnly('org.projectlombok:lombok:1.16.16')
+}
+
+jooq {
+    version = '3.9.3' // the default (can be omitted)
+    adsb(sourceSets.main) {
+        jdbc {
+            driver = 'org.h2.Driver'
+            url = 'jdbc:h2:~/adsb'
+            user = 'sa'
+            password = ''
+        }
+        generator {
+            name = 'org.jooq.util.DefaultGenerator'
+            strategy {
+                name = 'pt.brene.jooq.generator.AdsbJooqGeneratorStrategy'
+            }
+            database {
+                name = 'org.jooq.util.h2.H2Database'
+                inputSchema = 'PUBLIC'
+            }
+            generate {
+                relations = true
+                deprecated = false
+                records = true
+                pojos = true
+                fluentSetters = true
+                validationAnnotations = true
+            }
+            target {
+                packageName = 'pt.brene.adsb.domain'
+                directory = 'src/main/generated'
+            }
+        }
+    }
+}

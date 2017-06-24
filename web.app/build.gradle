@@ -1,0 +1,24 @@
+plugins {
+    id 'org.springframework.boot' version '1.5.4.RELEASE'
+}
+apply plugin: 'java'
+
+version = rootProject.version
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(':h2.connector')
+    compile('ch.qos.logback:logback-classic:1.2.3')
+    compile('org.apache.commons:commons-lang3:3.5')
+    compile('com.github.stephenc.eaio-uuid:uuid:3.4.0')
+    compile('com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.8')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-jetty')
+    compile('org.gavaghan:geodesy:1.1.3')
+    compileOnly('org.springframework.boot:spring-boot-configuration-processor')
+    compileOnly('org.projectlombok:lombok')
+}

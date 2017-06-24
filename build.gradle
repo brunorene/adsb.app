@@ -1,80 +1,10 @@
-plugins {
-    id 'org.springframework.boot' version '1.5.4.RELEASE'
-    id 'nu.studer.jooq' version '2.0.6'
-}
-apply plugin: 'java'
-apply plugin: 'idea'
+subprojects {
+    apply plugin: 'idea'
 
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 1.8
-
-sourceSets {
-    main {
-        java {
-            srcDir 'src/main/generated'
-        }
-    }
-}
-
-repositories {
-    mavenCentral()
-}
-
-idea {
-    module {
-        downloadJavadoc = true
-        downloadSources = true
-    }
-}
-
-dependencies {
-    compile('ch.qos.logback:logback-classic:1.2.3')
-    compile('com.google.guava:guava:22.0')
-    compile('org.jooq:jool:0.9.12')
-    compile('org.apache.commons:commons-lang3:3.5')
-    compile('com.github.stephenc.eaio-uuid:uuid:3.4.0')
-    compile('com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.8')
-    compile('org.springframework.boot:spring-boot-starter-web')
-    compile('org.springframework.boot:spring-boot-starter-jetty')
-    compile('org.springframework.boot:spring-boot-starter-jooq')
-    compile('org.gavaghan:geodesy:1.1.3')
-    runtime('org.springframework.boot:spring-boot-devtools')
-    runtime('com.h2database:h2:1.4.196')
-    jooqRuntime('com.h2database:h2:1.4.196')
-    compileOnly('org.springframework.boot:spring-boot-configuration-processor')
-    compileOnly('org.projectlombok:lombok')
-}
-
-jooq {
-    version = '3.9.3' // the default (can be omitted)
-    adsb(sourceSets.main) {
-        jdbc {
-            driver = 'org.h2.Driver'
-            url = 'jdbc:h2:~/adsb'
-            user = 'sa'
-            password = ''
-        }
-        generator {
-            name = 'org.jooq.util.DefaultGenerator'
-            strategy {
-                name = 'org.jooq.util.DefaultGeneratorStrategy'
-            }
-            database {
-                name = 'org.jooq.util.h2.H2Database'
-                inputSchema = 'PUBLIC'
-            }
-            generate {
-                relations = true
-                deprecated = false
-                records = true
-                pojos = true
-                fluentSetters = true
-                validationAnnotations = true
-            }
-            target {
-                packageName = 'pt.brene.adsb.domain'
-                directory = 'src/main/generated'
-            }
+    idea {
+        module {
+            downloadJavadoc = true
+            downloadSources = true
         }
     }
 }
@@ -82,3 +12,5 @@ jooq {
 task wrapper(type: Wrapper) {
     gradleVersion = '4.0'
 }
+
+version = '0.0.1-SNAPSHOT'

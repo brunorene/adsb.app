@@ -1,0 +1,10 @@
+apply plugin: 'java'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile("org.jooq:jooq-codegen:3.9.3")
+    compile('com.google.guava:guava:22.0')
+}
