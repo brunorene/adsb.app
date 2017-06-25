@@ -31,7 +31,7 @@ dependencies {
 }
 
 jooq {
-    version = '3.9.3' // the default (can be omitted)
+    version = '3.9.2'
     adsb(sourceSets.main) {
         jdbc {
             driver = 'org.h2.Driver'
