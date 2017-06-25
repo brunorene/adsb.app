@@ -4,6 +4,8 @@ import com.eaio.uuid.UUID;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.lambda.Seq;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Component;
 import pt.brene.adsb.AdsbConnector;
 import pt.brene.adsb.FlightInterface;
 import pt.brene.adsb.Utils;
@@ -18,6 +20,8 @@ import static pt.brene.adsb.domain.Tables.CONSUMER;
 import static pt.brene.adsb.domain.Tables.FLIGHT_ENTRY;
 
 @RequiredArgsConstructor
+@Component
+@ConditionalOnProperty("h2")
 public class H2Connector implements AdsbConnector {
 
     private final DSLContext dsl;

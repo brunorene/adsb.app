@@ -1,6 +1,9 @@
 adsb:
   host: localhost
   port: 30003
+
+endpoints.sensitive: false
+
 spring:
   jooq.sql-dialect: H2
   datasource:
@@ -11,4 +14,3 @@ spring:
     h2.console:
       enabled: true
       path: /h2-console
-endpoints.sensitive: false
