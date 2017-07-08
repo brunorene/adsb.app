@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-    compile('ch.qos.logback:logback-classic:1.2.3')
-    compile('com.google.guava:guava:22.0')
-    compile('com.github.stephenc.eaio-uuid:uuid:3.4.0')
+    compile 'ch.qos.logback:logback-classic:1.2.3'
+    compile 'com.google.guava:guava:22.0'
+    compile 'com.github.stephenc.eaio-uuid:uuid:3.4.0'
 }

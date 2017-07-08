@@ -53,7 +53,6 @@ public class H2Connector implements AdsbConnector {
 
     @Override
     public List<? extends FlightInterface> pollState(UUID uuid) {
-
         List<FlightEntry> entries = dsl.selectFrom(FLIGHT_ENTRY)
                 .where(FLIGHT_ENTRY.CLIENT.eq(Utils.convert(uuid)))
                 .orderBy(FLIGHT_ENTRY.FLIGHT_ID.asc(),

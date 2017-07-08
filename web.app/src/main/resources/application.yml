@@ -4,6 +4,8 @@ adsb:
 
 endpoints.sensitive: false
 
+spring.redis.host: localhost
+
 spring:
   jooq.sql-dialect: H2
   datasource:
