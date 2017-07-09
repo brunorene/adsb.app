@@ -1,6 +1,7 @@
 package pt.brene.adsb.redis;
 
 import com.eaio.uuid.UUID;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -31,21 +32,19 @@ public class RedisConfiguration {
         RedisTemplate<String, UUID> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory());
         template.setKeySerializer(new StringRedisSerializer());
-        template.setHashValueSerializer(new UUIDSerializer());
         template.setValueSerializer(new UUIDSerializer());
         return template;
     }
 
     @Bean(FLIGHT_TEMPLATE)
     public RedisTemplate<UUID, FlightEntry> redisTemplateForFlights() {
+        ObjectMapper mapper = new ObjectMapper();
         RedisTemplate<UUID, FlightEntry> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory());
         template.setKeySerializer(new UUIDSerializer());
-        template.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(FlightEntry.class));
         template.setValueSerializer(new Jackson2JsonRedisSerializer<>(FlightEntry.class));
         return template;
     }
-
 
 
 }

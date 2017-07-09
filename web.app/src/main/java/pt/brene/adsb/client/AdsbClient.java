@@ -25,6 +25,7 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.Executors;
 
 @Service
@@ -68,7 +69,7 @@ public class AdsbClient {
         return uuid;
     }
 
-    public List<UUID> getClients() {
+    public Set<UUID> getClients() {
         return connector.getClients();
     }
 

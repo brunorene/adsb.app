@@ -27,11 +27,8 @@ public class MessageReceiver {
     private final AdsbConnector connector;
 
     private <T extends AdsbMessage> void processMsg(Map<String, T> map, T msg) {
-        boolean logFlight = !map.containsKey(msg.getHexId());
         map.put(msg.getHexId(), msg);
-        if (logFlight) {
-            logFlight(msg.getHexId());
-        }
+        logFlight(msg.getHexId());
     }
 
     @Subscribe
@@ -53,18 +50,18 @@ public class MessageReceiver {
     private void logFlight(String hexId) {
         String callSign = identifiers.getOrDefault(hexId, new EsIdentificationAndCategory(hexId)).getCallSign();
         if (positions.containsKey(hexId)
-                && ObjectUtils.allNotNull(
-                positions.get(hexId).getLatitude()
-                , positions.get(hexId).getLongitude()
-                , positions.get(hexId).getAltitude())) {
+            && ObjectUtils.allNotNull(
+            positions.get(hexId).getLatitude()
+            , positions.get(hexId).getLongitude()
+            , positions.get(hexId).getAltitude())) {
             bus.post(connector.createFlight(null, null
-                    , new Timestamp(new Date().getTime())
-                    , callSign
-                    , positions.get(hexId).getLatitude()
-                    , positions.get(hexId).getLongitude()
-                    , positions.get(hexId).getAltitude()
-                    , Optional.ofNullable(speeds.get(hexId))
-                            .map(EsAirborneVelocity::getGroundSpeed).orElse(-1.0)));
+                , new Timestamp(new Date().getTime())
+                , callSign
+                , positions.get(hexId).getLatitude()
+                , positions.get(hexId).getLongitude()
+                , positions.get(hexId).getAltitude()
+                , Optional.ofNullable(speeds.get(hexId))
+                    .map(EsAirborneVelocity::getGroundSpeed).orElse(-1.0)));
         }
     }
 

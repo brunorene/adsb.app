@@ -1,6 +1,6 @@
 package pt.brene.adsb.redis.domain;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import pt.brene.adsb.FlightInterface;
 
@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 
 @Data
-@Builder
+@AllArgsConstructor
 public class FlightEntry implements FlightInterface, Serializable {
 
     private Long id;

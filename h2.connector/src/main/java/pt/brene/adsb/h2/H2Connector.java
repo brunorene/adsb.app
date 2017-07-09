@@ -13,6 +13,7 @@ import pt.brene.adsb.domain.tables.pojos.FlightEntry;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -34,12 +35,12 @@ public class H2Connector implements AdsbConnector {
     }
 
     @Override
-    public List<UUID> getClients() {
+    public Set<UUID> getClients() {
         return dsl.selectFrom(CONSUMER)
                 .fetch(CONSUMER.CLIENT)
                 .stream()
                 .map(Utils::convert)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
     @Override

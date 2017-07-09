@@ -4,12 +4,13 @@ import com.eaio.uuid.UUID;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Set;
 
 public interface AdsbConnector {
 
     void deleteOldEntries();
 
-    List<UUID> getClients();
+    Set<UUID> getClients();
 
     UUID getKey();
 

@@ -1,4 +1,15 @@
 var map;
+
+function getParameterByName(name, url) {
+    if (!url) url = window.location.href;
+    name = name.replace(/[\[\]]/g, "\\$&");
+    var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
 function initMap() {
   var markers = [];
   map = new google.maps.Map(document.getElementById('map'), {
@@ -23,8 +34,10 @@ function initMap() {
         }
       }
     };
-    xhttp.open("GET", "poll/571efcc0-53a4-11e7-b457-a434d936d7dd", true);
-    xhttp.send();
+    if(getParameterByName("client")) {
+        xhttp.open("GET", "poll/" + getParameterByName("client"), true);
+        xhttp.send();
+    }
   }
   setInterval(repeat, 5000);
 }

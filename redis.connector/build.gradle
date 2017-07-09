@@ -13,5 +13,7 @@ dependencies {
     compile 'org.springframework.boot:spring-boot-configuration-processor:1.5.4.RELEASE'
     compile 'org.springframework.boot:spring-boot-starter:1.5.4.RELEASE'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.8.9'
+    compile 'org.jooq:jool:0.9.12'
+    compile 'biz.paluch.redis:lettuce:4.3.2.Final'
     compileOnly 'org.projectlombok:lombok:1.16.16'
 }
