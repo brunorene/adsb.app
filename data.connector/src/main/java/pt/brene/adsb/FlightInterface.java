@@ -14,6 +14,8 @@ public interface FlightInterface {
 
     String getFlightId();
 
+    String getHexId();
+
     Double getLatitude();
 
     Double getLongitude();

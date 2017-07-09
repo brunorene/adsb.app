@@ -12,9 +12,8 @@ import pt.brene.adsb.FlightInterface;
 import pt.brene.adsb.redis.domain.FlightEntry;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static pt.brene.adsb.redis.RedisConfiguration.CLIENT_TEMPLATE;
 import static pt.brene.adsb.redis.RedisConfiguration.FLIGHT_TEMPLATE;
@@ -64,7 +63,17 @@ public class RedisConnector implements AdsbConnector {
     @Override
     public List<? extends FlightInterface> pollState(UUID uuid) {
         ZSetOperations<UUID, FlightEntry> ops = redisTemplateFlights.opsForZSet();
-        List<? extends FlightInterface> response = new ArrayList<>(ops.range(uuid, 0, -1));
+        Map<String, String> flightIds = new HashMap<>();
+        List<? extends FlightInterface> response = ops.reverseRange(uuid, 0, -1)
+            .stream()
+            .peek(flight -> {
+                flight.setTimestamp(new Timestamp(ops.score(uuid, flight).longValue()));
+                if (flight.getFlightId().startsWith("*")) {
+                    flight.setFlightId(flightIds.getOrDefault(flight.getHexId(), flight.getFlightId()));
+                } else {
+                    flightIds.put(flight.getHexId(), flight.getFlightId());
+                }
+            }).collect(Collectors.toList());
         if (!response.isEmpty()) {
             ops.remove(uuid, response.toArray(new Object[response.size()]));
         }
@@ -76,13 +85,13 @@ public class RedisConnector implements AdsbConnector {
     public <T extends FlightInterface> void insertFlight(T entry) {
         ZSetOperations<UUID, FlightEntry> ops = redisTemplateFlights.opsForZSet();
         double score = getScore((FlightEntry) entry);
-        ((FlightEntry) entry).setTimestamp(null);
+        ((FlightEntry) entry).setTimestamp(null); // same entry with diff ts is the same entry
         getClients().forEach(uuid -> ops.add(uuid, (FlightEntry) entry, score));
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends FlightInterface> T createFlight(Long id, byte[] client, Timestamp timestamp, String flightId, Double latitude, Double longitude, Double altitude, Double speed) {
-        return (T) new FlightEntry(id, client, timestamp, flightId, latitude, longitude, altitude, speed);
+    public <T extends FlightInterface> T createFlight(Long id, byte[] client, Timestamp timestamp, String flightId, String hexId, Double latitude, Double longitude, Double altitude, Double speed) {
+        return (T) new FlightEntry(id, client, timestamp, flightId, hexId, latitude, longitude, altitude, speed);
     }
 }

@@ -57,6 +57,7 @@ public class MessageReceiver {
             bus.post(connector.createFlight(null, null
                 , new Timestamp(new Date().getTime())
                 , callSign
+                , hexId
                 , positions.get(hexId).getLatitude()
                 , positions.get(hexId).getLongitude()
                 , positions.get(hexId).getAltitude()

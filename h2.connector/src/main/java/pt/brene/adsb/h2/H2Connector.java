@@ -93,7 +93,7 @@ public class H2Connector implements AdsbConnector {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <T extends FlightInterface> T createFlight(Long id, byte[] client, Timestamp timestamp, String flightId, Double latitude, Double longitude, Double altitude, Double speed) {
-        return (T) new FlightEntry(id, client, timestamp, flightId, latitude, longitude, altitude, speed);
+    public <T extends FlightInterface> T createFlight(Long id, byte[] client, Timestamp timestamp, String flightId, String hexId, Double latitude, Double longitude, Double altitude, Double speed) {
+        return (T) new FlightEntry(id, client, timestamp, flightId, hexId, latitude, longitude, altitude, speed);
     }
 }

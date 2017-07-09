@@ -15,6 +15,7 @@ public class FlightEntry implements FlightInterface, Serializable {
     private byte[] client;
     private Timestamp timestamp;
     private String flightId;
+    private String hexId;
     private Double latitude;
     private Double longitude;
     private Double altitude;

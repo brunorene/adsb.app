@@ -18,12 +18,13 @@ public interface AdsbConnector {
 
     <T extends FlightInterface> void insertFlight(T entry);
 
-    <T extends FlightInterface> T createFlight(Long id,
-                                               byte[] client,
-                                               Timestamp timestamp,
-                                               String flightId,
-                                               Double latitude,
-                                               Double longitude,
-                                               Double altitude,
-                                               Double speed);
+    <T extends FlightInterface> T createFlight(Long id
+        , byte[] client
+        , Timestamp timestamp
+        , String flightId
+        , String hexId
+        , Double latitude
+        , Double longitude
+        , Double altitude
+        , Double speed);
 }
